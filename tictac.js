@@ -9,7 +9,7 @@ const tic_tac_toe = {
 
     },
     jogador1: '',
-    jogador2: '',
+    jogador2: 'CPU',
     vencedor: '',
     container_element: null,
     gameover: false,
@@ -39,6 +39,10 @@ const tic_tac_toe = {
                 this.game_is_over(this.vencedor);
             }else{
                 this.simbols.change();
+                this.sleep(1000).then(() => {
+                    this.jogada_cpu();
+                });
+                //jogada do bot com timer
             }
             return true;
             
@@ -47,8 +51,34 @@ const tic_tac_toe = {
         }
     },
 
+    sleep: function(time){
+        return new Promise((resolve) => setTimeout(resolve, time));
+    },
+
+    jogada_cpu: function(){
+        var min = Math.ceil(1);
+        var max = Math.floor(9);
+        var index = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        if (this.board[index] === ''){
+            this.board[index] = this.simbols.options [ this.simbols.turn_index ];
+            this.draw();
+            let winning_sequences_index = this.check_winning_sequences(this.simbols.options [ this.simbols.turn_index ]);
+            if(winning_sequences_index >= 0) {
+                this.vencedor = (this.simbols.turn_index == 0 ? this.jogador1 : this.jogador2);
+                this.game_is_over(this.vencedor);
+            }else{
+                this.simbols.change();
+            }
+            return true;
+            
+        }else{
+            this.jogada_cpu();
+        }
+    },
+
     game_is_over: function(vencedor){
-        alert('FIM DE JOGO, VENCEDOR: ' + vencedor);
+        alert('FIM DE JOGO! \n ' + vencedor + ' ganhou a partida!');
         this.gameover = true;
         this.start();
     },
@@ -59,8 +89,8 @@ const tic_tac_toe = {
         this.gameover = false;
         this.jogador1 = prompt('Digite o nome do jogador 1: ', 'Jogador 1');
         this.jogador1 = (this.jogador1 == null ? 'Jogador 1' : this.jogador1);
-        this.jogador2 = prompt('Digite o nome do jogador 2: ', 'Jogador 2');
-        this.jogador2 = (this.jogador2 == null ? 'Jogador 2' : this.jogador2);
+/*         this.jogador2 = prompt('Digite o nome do jogador 2: ', 'Jogador 2');
+        this.jogador2 = (this.jogador2 == null ? 'Jogador 2' : this.jogador2); */
     },
 
     check_winning_sequences: function(simbol){
