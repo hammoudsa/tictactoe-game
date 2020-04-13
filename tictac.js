@@ -48,18 +48,19 @@ const tic_tac_toe = {
     },
 
     game_is_over: function(vencedor){
+        alert('FIM DE JOGO, VENCEDOR: ' + vencedor);
         this.gameover = true;
-        console.log("GAME OVER, VENCEDOR: " + vencedor);
+        this.start();
     },
 
     start: function(){
+        this.board.fill('');
+        this.draw();
+        this.gameover = false;
         this.jogador1 = prompt('Digite o nome do jogador 1: ', 'Jogador 1');
         this.jogador1 = (this.jogador1 == null ? 'Jogador 1' : this.jogador1);
         this.jogador2 = prompt('Digite o nome do jogador 2: ', 'Jogador 2');
         this.jogador2 = (this.jogador2 == null ? 'Jogador 2' : this.jogador2);
-        this.board.fill('');
-        this.draw();
-        this.gameover = false;
     },
 
     check_winning_sequences: function(simbol){
