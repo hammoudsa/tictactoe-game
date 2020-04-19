@@ -22,7 +22,8 @@ const tic_tac_toe = {
         [0,4,8],
         [2,4,6]
     ],
-    listaIndex: [],
+    listaBloqueio: [],
+    listaGanha: [],
     index: 0,
 
     init: function(container){
@@ -57,24 +58,45 @@ const tic_tac_toe = {
     },
 
     jogada_cpu: function(){
+        //verifica sequencia ganhadora
+        for(i in this.winning_sequences){
+            if(this.board[this.winning_sequences[i][0]] == 'O' && this.board[this.winning_sequences[i][1]] == 'O'){
+                if(this.board[this.winning_sequences[i][2]] == ''){
+                    this.listaGanha.push(this.winning_sequences[i][2]);
+                }
+            }else if(this.board[this.winning_sequences[i][1]] == 'O' && this.board[this.winning_sequences[i][2]] == 'O'){
+                if(this.board[this.winning_sequences[i][0]] == ''){
+                    this.listaGanha.push(this.winning_sequences[i][0]);
+                }
+            }
+            else if(this.board[this.winning_sequences[i][0]] == 'O' && this.board[this.winning_sequences[i][2]] == 'O'){
+                if(this.board[this.winning_sequences[i][1]] == ''){
+                    this.listaGanha.push(this.winning_sequences[i][1]);
+                }
+            }
+        }
+        //verifica sequencia de bloqueio
         for(i in this.winning_sequences){
             if(this.board[this.winning_sequences[i][0]] == 'X' && this.board[this.winning_sequences[i][1]] == 'X'){
                 if(this.board[this.winning_sequences[i][2]] == ''){
-                    this.listaIndex.push(this.winning_sequences[i][2]);
+                    this.listaBloqueio.push(this.winning_sequences[i][2]);
                 }
             }else if(this.board[this.winning_sequences[i][1]] == 'X' && this.board[this.winning_sequences[i][2]] == 'X'){
                 if(this.board[this.winning_sequences[i][0]] == ''){
-                    this.listaIndex.push(this.winning_sequences[i][0]);
+                    this.listaBloqueio.push(this.winning_sequences[i][0]);
                 }
             }
             else if(this.board[this.winning_sequences[i][0]] == 'X' && this.board[this.winning_sequences[i][2]] == 'X'){
                 if(this.board[this.winning_sequences[i][1]] == ''){
-                    this.listaIndex.push(this.winning_sequences[i][1]);
+                    this.listaBloqueio.push(this.winning_sequences[i][1]);
                 }
             }
         }
-        if(this.listaIndex.length != 0){
-            this.index = this.listaIndex[this.listaIndex.length-1];
+
+        if(this.listaGanha.length != 0){
+            this.index = this.listaGanha[this.listaGanha.length-1];
+        }else if(this.listaBloqueio.length != 0){
+            this.index = this.listaBloqueio[this.listaBloqueio.length-1];
         }else{
             var min = Math.ceil(0);
             var max = Math.floor(9);
