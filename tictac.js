@@ -30,6 +30,22 @@ const tic_tac_toe = {
         this.container_element = container;
     },
 
+    verificaVelha: function(){
+        var total = 0;
+        for(i in this.board){
+            if(this.board[i] != ''){
+                total++;
+                console.log('total:: ', total);
+                if(total == 9){
+                    alert('Velha, fim de jogo!');
+                    this.gameover = true;
+                    this.start();  
+                }
+
+            }
+        }
+    },
+
     make_play: function(position){
         if (this.gameover) return false;
         if (this.board[position] === ''){
@@ -41,6 +57,7 @@ const tic_tac_toe = {
                 this.game_is_over(this.vencedor);
             }else{
                 this.simbols.change();
+                this.verificaVelha();
                 this.sleep(1000).then(() => {
                     this.jogada_cpu();
                 });
@@ -95,14 +112,19 @@ const tic_tac_toe = {
 
         if(this.listaGanha.length != 0){
             this.index = this.listaGanha[this.listaGanha.length-1];
+            console.log('listaGanha');
         }else if(this.listaBloqueio.length != 0){
             this.index = this.listaBloqueio[this.listaBloqueio.length-1];
+            console.log('listaBloqueio');
         }else{
-            var min = Math.ceil(0);
-            var max = Math.floor(9);
-            this.index = Math.floor(Math.random() * (max - min + 1)) + min;
+            this.gerarValorAleatorio();
         }
 
+        this.executaJogada();
+        
+    },
+
+    executaJogada: function(){
         if (this.board[this.index] === ''){
             this.board[this.index] = this.simbols.options [ this.simbols.turn_index ];
             this.draw();
@@ -111,13 +133,22 @@ const tic_tac_toe = {
                 this.vencedor = (this.simbols.turn_index == 0 ? this.jogador1 : this.jogador2);
                 this.game_is_over(this.vencedor);
             }else{
+                this.verificaVelha();
                 this.simbols.change();
             }
             return true;
             
         }else{
-            this.jogada_cpu();
+            this.gerarValorAleatorio();
+            this.executaJogada();
         }
+    },
+
+    gerarValorAleatorio: function(){
+        console.log('Gerou Aleatório');
+        var min = Math.ceil(0);
+        var max = Math.floor(9);
+        this.index = Math.floor(Math.random() * (max - min + 1)) + min;
     },
 
     game_is_over: function(vencedor){
@@ -128,6 +159,8 @@ const tic_tac_toe = {
     },
 
     start: function(){
+        this.listaBloqueio=[];
+        this.listaGanha=[];
         this.board.fill('');
         this.draw();
         this.gameover = false;
