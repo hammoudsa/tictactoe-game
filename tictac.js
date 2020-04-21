@@ -1,15 +1,25 @@
 const tic_tac_toe = {
-    board: ['', '', '', '', '', '',  '', '', ''],
+    board: ['', '', '', '', '', '', '', '', ''],
     simbols: {
         options: ['X','O'],
         turn_index: 0,
         change: function(){
             this.turn_index = (this.turn_index === 0 ? 1 : 0);
+            if(this.turn_index === 0){
+                document.getElementById('turn').innerHTML = 'Sua vez!';
+            }else{
+                document.getElementById('turn').innerHTML = 'Vez do adversário!';
+            }
+            
         }
     },
-    jogador1: '',
+    jogador1: 'Jogador 1',
     jogador2: 'CPU',
     vencedor: '',
+    placar: {
+        jogador1: 0,
+        jogador2: 0
+    },
     container_element: null,
     gameover: false,
     winning_sequences: [
@@ -35,7 +45,7 @@ const tic_tac_toe = {
         for(i in this.board){
             if(this.board[i] != ''){
                 total++;
-                console.log('total:: ', total);
+                
                 if(total == 9){
                     alert('Velha, fim de jogo!');
                     this.gameover = true;
@@ -44,29 +54,32 @@ const tic_tac_toe = {
 
             }
         }
+        console.log('total:: ', total);
     },
 
     make_play: function(position){
-        if (this.gameover) return false;
-        if (this.board[position] === ''){
-            this.board[position] = this.simbols.options [ this.simbols.turn_index ];
-            this.draw();
-            let winning_sequences_index = this.check_winning_sequences(this.simbols.options [ this.simbols.turn_index ]);
-            if(winning_sequences_index >= 0) {
-                this.vencedor = (this.simbols.turn_index == 0 ? this.jogador1 : this.jogador2);
-                this.game_is_over(this.vencedor);
+        if(this.simbols.turn_index == 0){
+            if (this.gameover) return false;
+            if (this.board[position] === ''){
+                this.board[position] = this.simbols.options [ this.simbols.turn_index ];
+                this.draw();
+                let winning_sequences_index = this.check_winning_sequences(this.simbols.options [ this.simbols.turn_index ]);
+                if(winning_sequences_index >= 0) {
+                    this.vencedor = (this.simbols.turn_index == 0 ? this.jogador1 : this.jogador2);
+                    this.game_is_over(this.vencedor);
+                }else{
+                    this.simbols.change();
+                    this.verificaVelha();
+                    this.sleep(1000).then(() => {
+                        this.jogada_cpu();
+                    });
+                    //jogada do bot com timer
+                }
+                return true;
+                
             }else{
-                this.simbols.change();
-                this.verificaVelha();
-                this.sleep(1000).then(() => {
-                    this.jogada_cpu();
-                });
-                //jogada do bot com timer
+                return false;
             }
-            return true;
-            
-        }else{
-            return false;
         }
     },
 
@@ -153,6 +166,13 @@ const tic_tac_toe = {
 
     game_is_over: function(vencedor){
         alert('FIM DE JOGO! \n ' + vencedor + ' ganhou a partida!');
+        if(vencedor == this.jogador1){
+            this.placar.jogador1++;
+        }else{
+            this.placar.jogador2++;
+        }
+        document.getElementById('placar1').innerHTML = this.jogador1 + ': ' + this.placar.jogador1;
+        document.getElementById('placar2').innerHTML = this.jogador2 + ': ' + this.placar.jogador2;
         this.simbols.turn_index = 0;
         this.gameover = true;
         this.start();
@@ -162,9 +182,10 @@ const tic_tac_toe = {
         this.listaBloqueio=[];
         this.listaGanha=[];
         this.board.fill('');
+        document.getElementById('turn').innerHTML = 'Sua vez!';
         this.draw();
         this.gameover = false;
-        this.jogador1 = prompt('Digite o nome do jogador 1: ', 'Jogador 1');
+        this.jogador1 = prompt('Digite o nome do jogador 1: ', this.jogador1);
         this.jogador1 = (this.jogador1 == null ? 'Jogador 1' : this.jogador1);
 /*         this.jogador2 = prompt('Digite o nome do jogador 2: ', 'Jogador 2');
         this.jogador2 = (this.jogador2 == null ? 'Jogador 2' : this.jogador2); */

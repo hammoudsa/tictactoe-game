@@ -24,3 +24,14 @@
 .tela{
   background-color: #a5a5a5;
 }
+
+#turn{
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+#placar{
+  font-size: 20px;
+  text-align: left;
+}
